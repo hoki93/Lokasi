@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tracking...</title>
+
+<style>
+body{
+  margin:0;
+  background:black;
+  color:#00ff00;
+  font-family:monospace;
+  overflow:hidden;
+}
+
+canvas{
+  position:fixed;
+  top:0;
+  left:0;
+  z-index:-1;
+}
+
+.container{
+  padding:20px;
+}
+
+.terminal{
+  border:1px solid #00ff00;
+  height:300px;
+  overflow:auto;
+  padding:10px;
+}
+
+.progress{
+  height:20px;
+  background:#00ff00;
+  width:0%;
+  margin-top:10px;
+}
+</style>
+</head>
+
+<body>
+
+<canvas id="matrix"></canvas>
+
+<div class="container">
+<h2>[ TRACKING SYSTEM ]</h2>
+
+<div class="terminal" id="terminal"></div>
+
+<div style="border:1px solid #00ff00;">
+  <div class="progress" id="bar"></div>
+</div>
+
+<p id="status">Starting...</p>
+</div>
+
+<script>
+
+/* MATRIX */
+const c=document.getElementById("matrix");
+const x=c.getContext("2d");
+c.height=window.innerHeight;
+c.width=window.innerWidth;
+
+let letters="01ABC";
+let font=14;
+let col=c.width/font;
+let drops=[];
+
+for(let i=0;i<col;i++) drops[i]=1;
+
+function draw(){
+  x.fillStyle="rgba(0,0,0,0.05)";
+  x.fillRect(0,0,c.width,c.height);
+  x.fillStyle="#0f0";
+  x.font=font+"px monospace";
+
+  for(let i=0;i<drops.length;i++){
+    let t=letters[Math.floor(Math.random()*letters.length)];
+    x.fillText(t,i*font,drops[i]*font);
+
+    if(drops[i]*font>c.height && Math.random()>0.95)
+      drops[i]=0;
+
+    drops[i]++;
+  }
+}
+setInterval(draw,33);
+
+/* TERMINAL */
+const term=document.getElementById("terminal");
+const bar=document.getElementById("bar");
+const status=document.getElementById("status");
+
+const logs=[
+"Connecting server...",
+"Bypassing firewall...",
+"Tracking IP...",
+"Accessing satellite...",
+"Getting location...",
+"Finishing..."
+];
+
+let i=0;
+let p=0;
+
+function addLog(){
+  if(i<logs.length){
+    let d=document.createElement("div");
+    d.textContent="> "+logs[i];
+    term.appendChild(d);
+    term.scrollTop=term.scrollHeight;
+    i++;
+  }
+}
+
+function prog(){
+  if(p<100){
+    p+=10;
+    bar.style.width=p+"%";
+  }else{
+    status.innerText="✔ TARGET FOUND";
+  }
+}
+
+setInterval(addLog,1000);
+setInterval(prog,1200);
+
+</script>
+
+</body>
+</html>
